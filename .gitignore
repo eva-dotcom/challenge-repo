@@ -1,1 +1,4 @@
 env
+.DS_Store
+kiapp/__pycache__/
+.vscode/

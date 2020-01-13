@@ -52,47 +52,16 @@ def run():
     target = [1 if i < 2400 else 0 for i in range(4800)]
     
     # This is for finding the right c value for regularization
-    # X_train, X_val, y_train, y_val = train_test_split(X, target, train_size = 0.75)
+    X_train, X_val, y_train, y_val = train_test_split(X, target, train_size = 0.75)
     # Find optimum c
-    # for c in [0.01, 0.05, 0.25, 0.5, 1]:
+    for c in [0.01, 0.05, 0.25, 0.5, 1]:
     
-    #     lr = LogisticRegression(C=c, max_iter=200)
-    #     lr.fit(X_train, y_train)
-    #     print ("Accuracy for C=%s: %s" 
-    #         % (c, accuracy_score(y_val, lr.predict(X_val))))
+         lr = LogisticRegression(C=c, max_iter=200)
+         lr.fit(X_train, y_train)
+         print ("Accuracy for C=%s: %s" 
+             % (c, accuracy_score(y_val, lr.predict(X_val))))
 
-    #Final Model
-    #Using Logistic Regression 
-    final_model = LogisticRegression(C=0.25)
-    #Fit final Model
-    final_model.fit(X, target)
-
-    #Test final Model with the 200 spare reviews
-    target = [1 if i < 100 else 0 for i in range(200)]
-    y_pred  = final_model.predict(X_test)
-    print ("Final Accuracy: %s" % accuracy_score(target, y_pred))
-
-
-    # most discriminiating words
-    # postive words: smallest coefficients, negative words: largest coefficients
-
-    #dictionary: words and coefficients
-    feature_to_coef = {
-        word: coef for word, coef in zip(
-            cv.get_feature_names(), final_model.coef_[0]
-        )
-    }
-    print("Positive Wörter")
-    for best_positive in sorted(
-        feature_to_coef.items(), 
-        key=lambda x: x[1], 
-        reverse=True)[:6]:
-        print (best_positive)
-    print("Negative Wörter")
-    for best_negative in sorted(
-        feature_to_coef.items(), 
-        key=lambda x: x[1])[:6]:
-        print (best_negative)
+ 
 
 if __name__ == '__main__':
     run()
