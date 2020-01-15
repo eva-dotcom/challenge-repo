@@ -27,7 +27,7 @@ def test_text():
 
 def stop_program():
     global running
-    print("Stopping programm")
+    print("Stopping program")
     running = False
 
 def accuracy():

@@ -1,3 +1,6 @@
 env
 kiapp/__pycache__/
 .vscode
+.DS_Store
+kiapp/model.joblib
+kiapp/vectorizer.joblib
