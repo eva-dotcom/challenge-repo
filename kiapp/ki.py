@@ -2,6 +2,7 @@ import csv
 from kiapp.inc import load_reviews_from_file, preprocess_reviews
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
@@ -35,17 +36,19 @@ class Ki:
         
         reviews_train = reviews_pos + reviews_neg #combine
         reviews_train_clean = preprocess_reviews(reviews_train) #clean
+        
         #New Vecotrizer
-        vc = CountVectorizer(binary=True, stop_words='english', strip_accents='ascii')
+        stop_words = ['the', 'a', 'in', 'of', 'at']
+        cv = CountVectorizer(binary=True, ngram_range=(1,2), stop_words=stop_words)
         # Transform data into Matrix
-        vc.fit(reviews_train_clean)
-        X = vc.transform(reviews_train_clean)
+        cv.fit(reviews_train_clean)
+        X = cv.transform(reviews_train_clean)
         #Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, reviews_val, train_size = 0.75
         )
         #Accuracy on test data
-        lr = LogisticRegression(C=Ki.c)
+        lr = LinearSVC(C=Ki.c)
         lr.fit(X_train, y_train)
         print ("Accuracy for C=%s: %s" 
             % (Ki.c, accuracy_score(y_test, lr.predict(X_test))))
@@ -57,7 +60,7 @@ class Ki:
         #Fit final Model
         final_model.fit(X, reviews_val)
         Ki.model = final_model
-        Ki.vectorizer = vc
+        Ki.vectorizer = cv
         # Display positive and negative Words
         feature_to_coef = {
             word: coef for word, coef in zip(
@@ -68,12 +71,12 @@ class Ki:
         for best_positive in sorted(
             feature_to_coef.items(), 
             key=lambda x: x[1], 
-            reverse=True)[:6]:
+            reverse=True)[:10]:
             print (best_positive)
         print("Negative words\n")
         for best_negative in sorted(
             feature_to_coef.items(), 
-            key=lambda x: x[1])[:6]:
+            key=lambda x: x[1])[:10]:
             print (best_negative)
         
         dump(Ki.model, 'kiapp/model.joblib')
