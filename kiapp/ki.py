@@ -45,7 +45,7 @@ class Ki:
         X = cv.transform(reviews_train_clean)
         #Split data
         X_train, X_test, y_train, y_test = train_test_split(
-            X, reviews_val, train_size = 0.75
+            X, reviews_val, train_size = 0.9
         )
         #Accuracy on test data
         lr = LinearSVC(C=Ki.c)
@@ -56,7 +56,7 @@ class Ki:
         print(classification_report(y_test, lr.predict(X_test)))
         #Final Model
         #Using Logistic Regression 
-        final_model = LogisticRegression(C=Ki.c)
+        final_model = LinearSVC(C=Ki.c)
         #Fit final Model
         final_model.fit(X, reviews_val)
         Ki.model = final_model
