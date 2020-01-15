@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
+from pandas import DataFrame
 
 class Ki:
     """ This class holds all functions to create a KI Model & evaluate data based on the trained model  """
@@ -97,7 +98,11 @@ class Ki:
                 if (y_pred[i] == 1):
                     evaluation = 'Positive'
                 eval_writer.writerow([reviews_test[i], evaluation])
-        print("File exported as evaluation.csv")
+        # Export evaluated data as Excel
+        df = DataFrame({'Reviews:': reviews_test, 'Predicted class (1=pos, 2=neg)': y_pred})
+        df.to_excel('evaluation.xls', sheet_name='sheet1', index=False)
+
+        print("File exported as evaluation.csv and evaluation.xls")
 
 
     def evaluate_text(self, text):

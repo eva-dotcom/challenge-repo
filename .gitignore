@@ -4,3 +4,5 @@ kiapp/__pycache__/
 .DS_Store
 kiapp/model.joblib
 kiapp/vectorizer.joblib
+evaluation.csv
+evaluation.xls
