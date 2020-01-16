@@ -1,15 +1,15 @@
 import csv
 from kiapp.inc import load_reviews_from_file, preprocess_reviews
 
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
+from pandas import DataFrame
 
 class Ki:
-    """ This class holds all function to create a KI Model & evaluate data based on the trained model  """
+    """ This class holds all functions to create a KI Model & evaluate data based on the trained model  """
     c = 0.25
     model = 0
     vectorizer = 0
@@ -19,7 +19,7 @@ class Ki:
             Ki.model = load('kiapp/model.joblib')
             Ki.vectorizer = load('kiapp/vectorizer.joblib')
         except :
-            print('Model or Vectorizer file not found at kiapp - plese generate')
+            print('Model or Vectorizer file not found at kiapp - please generate')
 
     def generate_model(self):
         """ Generates the KI Model based on pos.txt & neg.txt
@@ -34,30 +34,30 @@ class Ki:
         reviews_neg = load_reviews_from_file("kiapp/data/neg.txt")
         reviews_val = [1 if i < 2500 else 0 for i in range(5000)] # first 2500 positive (1), other negative (0)
         
-        reviews_train = reviews_pos + reviews_neg #combine
-        reviews_train_clean = preprocess_reviews(reviews_train) #clean
+        reviews_train = reviews_pos + reviews_neg # combine
+        reviews_train_clean = preprocess_reviews(reviews_train) # clean
         
-        #New Vecotrizer
+        # New Vecotrizer
         stop_words = ['the', 'a', 'in', 'of', 'at']
         cv = CountVectorizer(binary=True, ngram_range=(1,2), stop_words=stop_words)
         # Transform data into Matrix
         cv.fit(reviews_train_clean)
         X = cv.transform(reviews_train_clean)
-        #Split data
+        # Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, reviews_val, train_size = 0.9
         )
-        #Accuracy on test data
-        lr = LinearSVC(C=Ki.c)
-        lr.fit(X_train, y_train)
+        # Accuracy on test data
+        svm = LinearSVC(C=Ki.c)
+        svm.fit(X_train, y_train)
         print ("Accuracy for C=%s: %s" 
-            % (Ki.c, accuracy_score(y_test, lr.predict(X_test))))
+            % (Ki.c, accuracy_score(y_test, svm.predict(X_test))))
         print('Report:')
-        print(classification_report(y_test, lr.predict(X_test)))
-        #Final Model
-        #Using Logistic Regression 
+        print(classification_report(y_test, svm.predict(X_test)))
+        # Final Model
+        # Using a Support Vector Classifier 
         final_model = LinearSVC(C=Ki.c)
-        #Fit final Model
+        # Fit final Model
         final_model.fit(X, reviews_val)
         Ki.model = final_model
         Ki.vectorizer = cv
@@ -67,13 +67,13 @@ class Ki:
                 Ki.vectorizer.get_feature_names(), Ki.model.coef_[0]
             )
         }
-        print("Positive words:\n")
+        print("\nPositive words:\n")
         for best_positive in sorted(
             feature_to_coef.items(), 
             key=lambda x: x[1], 
             reverse=True)[:10]:
             print (best_positive)
-        print("Negative words\n")
+        print("\nNegative words:\n")
         for best_negative in sorted(
             feature_to_coef.items(), 
             key=lambda x: x[1])[:10]:
@@ -87,7 +87,7 @@ class Ki:
 
         # Load file and clean data
         reviews_test = preprocess_reviews(load_reviews_from_file(file))
-        X_test = Ki.vectorizer.transform(reviews_test)  #Vectorize evaluation data
+        X_test = Ki.vectorizer.transform(reviews_test)  # Vectorize evaluation data
         y_pred  = Ki.model.predict(X_test) # Predict data based on trained model
         # Export evaluated data as csv
         with open('evaluation.csv', mode='w') as eval_file:
@@ -98,7 +98,11 @@ class Ki:
                 if (y_pred[i] == 1):
                     evaluation = 'Positive'
                 eval_writer.writerow([reviews_test[i], evaluation])
-        print("File exported as evaluation.csv")
+        # Export evaluated data as Excel
+        df = DataFrame({'Reviews:': reviews_test, 'Predicted class (1=pos, 2=neg)': y_pred})
+        df.to_excel('evaluation.xls', sheet_name='sheet1', index=False)
+
+        print("File exported as evaluation.csv and evaluation.xls")
 
 
     def evaluate_text(self, text):
@@ -118,16 +122,16 @@ class Ki:
         reviews_neg = load_reviews_from_file("kiapp/data/neg.txt")
         reviews_val = [1 if i < 2500 else 0 for i in range(5000)] # first 2500 positive (1), other negative (0)
         
-        reviews_train = reviews_pos + reviews_neg #combine
-        reviews_train_clean = preprocess_reviews(reviews_train) #clean
+        reviews_train = reviews_pos + reviews_neg # combine
+        reviews_train_clean = preprocess_reviews(reviews_train) # clean
         X = Ki.vectorizer.transform(reviews_train_clean)
         X_train, X_test, y_train, y_test = train_test_split(
             X, reviews_val, train_size = 0.75
         )
-        #Accuracy on test data
-        lr = LogisticRegression(C=Ki.c)
-        lr.fit(X_train, y_train)
-        y_pred = lr.predict(X_test)
+        # Accuracy on test data
+        svm = LinearSVC(C=Ki.c)
+        svm.fit(X_train, y_train)
+        y_pred = svm.predict(X_test)
         print ("Accuracy for C=%s: %s" 
             % (Ki.c, accuracy_score(y_test, y_pred)))
         print('Report:')
