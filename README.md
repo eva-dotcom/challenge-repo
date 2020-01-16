@@ -6,5 +6,5 @@
     Konrad Appel (Matrikelnummer: )
     Eva Groos (Matrikelnummer: 1999719)
     Vincent Kohl (Matrikelnummer: )
-    Chris Wölfle (Matrikelnummer: )
+    Christopher Wölfle (Matrikelnummer: 2050571)
     Magnus Xxx (Matrikelnummer: )
