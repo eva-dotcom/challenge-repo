@@ -3,8 +3,8 @@
  KI Anwendung zur Klassifizierung von Kritiken in die binären Klassen positiv und negativ. 
 
 ## Gruppenmitglieder:
-    Konrad Appel (Matrikelnummer: )
+    Konrad Appel (Matrikelnummer: 2067576)
     Eva Groos (Matrikelnummer: 1999719)
-    Vincent Kohl (Matrikelnummer: )
+    Vincent Kohl (Matrikelnummer: 2111966)
     Christopher Wölfle (Matrikelnummer: 2050571)
-    Magnus Xxx (Matrikelnummer: )
+    Magnus Herbst (Matrikelnummer: 2100823)
