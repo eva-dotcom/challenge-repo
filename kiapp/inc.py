@@ -20,7 +20,7 @@ def preprocess_reviews(reviews):
     reviews = [re.sub(r"\'t", " not", line.lower()) for line in reviews]
     reviews = [re.sub(r"\'ve", " have", line.lower()) for line in reviews]
     reviews = [re.sub(r"\'m", " am", line.lower()) for line in reviews]
-
+    reviews = [re.sub(r"didnt", "did not", line.lower()) for line in reviews]
 
     reviews = [REPLACE_PUCTUATION.sub(" ", line.lower()) for line in reviews]
     reviews = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews]
