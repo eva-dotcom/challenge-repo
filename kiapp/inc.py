@@ -31,6 +31,6 @@ def preprocess_reviews(reviews):
 
 
 if __name__ == '__main__':
-    input = ["This isn't Chris's day he'd like to have a cow's.neck, but he doesn't like coes, didn't. \"Ente\""]
+    input = ["This isn't Chris's day he'd like to have a cow's.Aeck, but he doesn't like coes, didn't. \"Ente\""]
 
     print(preprocess_reviews(input))
